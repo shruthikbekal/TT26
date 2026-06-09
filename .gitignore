@@ -1,0 +1,9 @@
+# Dependencies
+timetable-system/backend/node_modules/
+timetable-system/frontend/node_modules/
+
+# Build artifacts
+timetable-system/frontend/dist/
+
+# Environment files
+**/.env

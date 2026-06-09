@@ -6,6 +6,22 @@ import { fetchReports, fetchTimetable } from './api';
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
+function createClientLabel() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `User-${crypto.randomUUID().slice(0, 8)}`;
+  }
+
+  return `User-${Date.now()}`;
+}
+
+function createTempRowId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `tmp-${crypto.randomUUID()}`;
+  }
+
+  return `tmp-${Date.now()}`;
+}
+
 function App() {
   const [rows, setRows] = useState([]);
   const [reports, setReports] = useState([]);
@@ -15,7 +31,7 @@ function App() {
   const socket = useMemo(() => io(SOCKET_URL, { transports: ['websocket'] }), []);
 
   useEffect(() => {
-    const username = localStorage.getItem('timetable_username') || `User-${Math.floor(Math.random() * 1000)}`;
+    const username = localStorage.getItem('timetable_username') || createClientLabel();
     localStorage.setItem('timetable_username', username);
 
     socket.emit('user-joined', { name: username });
@@ -91,7 +107,7 @@ function App() {
     setRows((current) => [
       ...current,
       {
-        tempId: `tmp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        tempId: createTempRowId(),
         day: '',
         time_slot: '',
         semester: '',

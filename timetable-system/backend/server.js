@@ -11,14 +11,17 @@ const { saveTimetableEntry } = require('./utils/timetableService');
 const app = express();
 const server = http.createServer(app);
 
-const corsOrigin = process.env.CORS_ORIGIN || '*';
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
-app.use(cors({ origin: corsOrigin === '*' ? true : corsOrigin }));
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 
 const io = new Server(server, {
   cors: {
-    origin: corsOrigin === '*' ? true : corsOrigin,
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
   },
 });
